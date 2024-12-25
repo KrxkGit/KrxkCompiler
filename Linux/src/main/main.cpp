@@ -2,6 +2,7 @@
 
 #include "defines/node.h"
 #include "yacc/parserExport.h"
+#include "defines/CodeGen.h"
 
 int eval(Node *node)
 {
@@ -34,11 +35,21 @@ int eval(Node *node)
 
 int main()
 {
+	// bison & flex 扫描分析，生成 AST
 	doParse();
 
-	// printNode();
+	// 后处理
 	auto root = getHead();
+	CodeGen codeGen;
+
+	// printNode();
 	std::cout << "Result: " << eval(root) << std::endl;
+
+	// llvm output
+	codeGen.generateIR(root);
+	codeGen.printResult();
+
+	// 清理资源
 	removeNode(root);
 	return 0;
 }
